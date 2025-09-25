@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  rabbitmq-1:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq-1
+    hostname: rabbitmq-1
+    ports:
+      - "5673:5672"   # porta AMQP
+      - "15673:15672" # interface de gerenciamento
+    environment:
+      RABBITMQ_DEFAULT_USER: user1
+      RABBITMQ_DEFAULT_PASS: pass1
+    networks:
+      - rabbit-net
+
+  rabbitmq-2:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq-2
+    hostname: rabbitmq-2
+    ports:
+      - "5674:5672"   # porta AMQP
+      - "15674:15672" # interface de gerenciamento
+    environment:
+      RABBITMQ_DEFAULT_USER: user2
+      RABBITMQ_DEFAULT_PASS: pass2
+    networks:
+      - rabbit-net
+
+networks:
+  rabbit-net:
+    driver: bridge
