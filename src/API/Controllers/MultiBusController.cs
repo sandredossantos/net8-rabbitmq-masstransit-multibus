@@ -1,4 +1,5 @@
 ﻿using Messaging.Events;
+using Messaging.Producers;
 using Messaging.Publishers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,19 +7,22 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class MultiBusController(
-        IEventPublisher<CreatedEvent> createdPublisher,
-        IEventPublisher<UpdatedEvent> updatedPublisher) : ControllerBase
+    public class MultiBusController(ICreatedProducer createdProducer, IUpdatedProducer updatedProducer) : ControllerBase
     {
-        private readonly IEventPublisher<CreatedEvent> _createdPublisher = createdPublisher;
-        private readonly IEventPublisher<UpdatedEvent> _updatedPublisher = updatedPublisher;
+        private readonly ICreatedProducer _createdProducer = createdProducer;
+        private readonly IUpdatedProducer _updatedProducer = updatedProducer;
 
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> CreateAsync()
         {
-            var createdEvent = new CreatedEvent { Id = Guid.NewGuid() };
-            await _createdPublisher.PublishAsync(createdEvent);
+            var createdEvent = new CreatedEvent 
+            {
+                Id = Guid.NewGuid()
+            };
+
+            await _createdProducer.ProduceAsync(createdEvent);
+
             return Ok();
         }
 
@@ -26,8 +30,13 @@ namespace API.Controllers
         [Route("Update")]
         public async Task<IActionResult> UpdateAsync()
         {
-            var updatedEven = new UpdatedEvent { Id = Guid.NewGuid() };
-            await _updatedPublisher.PublishAsync(updatedEven);
+            var updatedEvent = new UpdatedEvent 
+            {
+                Id = Guid.NewGuid() 
+            };
+
+            await _updatedProducer.ProduceAsync(updatedEvent);
+
             return Ok();
         }
     }

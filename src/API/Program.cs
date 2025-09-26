@@ -9,6 +9,7 @@ builder.Services.AddSwaggerGen();
 #region My DI
 builder.Services.AddPublishers();
 builder.Services.AddMassTransitBind();
+builder.Services.AddProducers();
 #endregion
 
 var app = builder.Build();

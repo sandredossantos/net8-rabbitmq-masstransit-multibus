@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Messaging.Abstractions;
 using Messaging.Events;
+using Messaging.Producers;
 using Messaging.Publishers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +13,14 @@ namespace Messaging.DI
         {
             services.AddScoped<IEventPublisher<CreatedEvent>, EventPublisher<CreatedEvent, IPrimaryBus>>();
             services.AddScoped<IEventPublisher<UpdatedEvent>, EventPublisher<UpdatedEvent, ISecondaryBus>>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddProducers(this IServiceCollection services)
+        {
+            services.AddScoped<ICreatedProducer, CreatedProducer>();
+            services.AddScoped<IUpdatedProducer, UpdatedProducer>();
 
             return services;
         }
